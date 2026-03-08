@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Study Companion</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Syne:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- ── Layer 0: Deep-space canvas particles ── -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- ── Layer 1: Noise grain overlay ── -->
+  <div class="noise-overlay"></div>
+
+  <!-- ── Layer 2: Ambient radial glows ── -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+
+  <!-- ── Layer 3: Perspective grid ── -->
+  <div class="bg-grid"></div>
+
+  <!-- ── Layer 4: Horizontal scan line ── -->
+  <div class="scan-line"></div>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar">
+    <!-- Decorative top neon bar -->
+    <div class="sidebar-neon-bar"></div>
+
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <i class="fa-solid fa-brain"></i>
+        <div class="logo-icon-ring"></div>
+      </div>
+      <div class="logo-text">
+        <span class="logo-title">AI Study</span>
+        <span class="logo-sub">Companion v2.0</span>
+      </div>
+    </div>
+
+    <!-- Decorative circuit lines -->
+    <div class="sidebar-circuit">
+      <span></span><span></span><span></span>
+    </div>
+
+    <ul class="nav-links">
+      <li>
+        <a href="#" class="nav-link active" data-page="dashboard">
+          <span class="nav-icon-wrap"><i class="fa-solid fa-gauge-high"></i></span>
+          <span class="nav-label">Dashboard</span>
+          <span class="nav-pill"></span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link" data-page="notes">
+          <span class="nav-icon-wrap"><i class="fa-solid fa-file-lines"></i></span>
+          <span class="nav-label">Notes Generator</span>
+          <span class="nav-pill"></span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link" data-page="quiz">
+          <span class="nav-icon-wrap"><i class="fa-solid fa-circle-question"></i></span>
+          <span class="nav-label">Quiz Generator</span>
+          <span class="nav-pill"></span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link" data-page="planner">
+          <span class="nav-icon-wrap"><i class="fa-solid fa-calendar-days"></i></span>
+          <span class="nav-label">Study Planner</span>
+          <span class="nav-pill"></span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link" data-page="focus">
+          <span class="nav-icon-wrap"><i class="fa-solid fa-stopwatch"></i></span>
+          <span class="nav-label">Focus Mode</span>
+          <span class="nav-pill"></span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="ai-status-badge">
+        <div class="status-pulse-ring"></div>
+        <span class="status-dot"></span>
+        <span class="status-text">AI Engine <em>Online</em></span>
+      </div>
+      <div class="sidebar-version">sys.v2.0.1 / stable</div>
+    </div>
+  </nav>
+
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <button class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="mobile-logo">AI Study Companion</div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content" id="main-content">
+
+    <!-- ===== DASHBOARD PAGE ===== -->
+    <section class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Mission Control</h1>
+          <p class="page-subtitle">Your AI-powered study ecosystem</p>
+        </div>
+        <div class="header-badge">
+          <i class="fa-solid fa-satellite-dish"></i>
+          <span id="current-date"></span>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-card stat-card--fire">
+          <div class="stat-card-bg"></div>
+          <div class="stat-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-streak">0</span>
+            <span class="stat-label">Day Streak</span>
+          </div>
+          <div class="stat-sparkline"></div>
+        </div>
+        <div class="stat-card stat-card--cyan">
+          <div class="stat-card-bg"></div>
+          <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-focus">0</span>
+            <span class="stat-label">Focus Hours</span>
+          </div>
+          <div class="stat-sparkline"></div>
+        </div>
+        <div class="stat-card stat-card--gold">
+          <div class="stat-card-bg"></div>
+          <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-quizzes">0</span>
+            <span class="stat-label">Quizzes Done</span>
+          </div>
+          <div class="stat-sparkline"></div>
+        </div>
+        <div class="stat-card stat-card--violet">
+          <div class="stat-card-bg"></div>
+          <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-notes">0</span>
+            <span class="stat-label">Notes Created</span>
+          </div>
+          <div class="stat-sparkline"></div>
+        </div>
+      </div>
+
+      <!-- Tool Cards Grid -->
+      <div class="section-label"><span>Quick Access</span></div>
+      <div class="tool-grid">
+
+        <div class="tool-card" data-page="notes">
+          <div class="glass-border"></div>
+          <div class="tool-card-shimmer"></div>
+          <div class="corner-accent ca-tl"></div>
+          <div class="corner-accent ca-br"></div>
+          <div class="tool-card-icon"><i class="fa-solid fa-file-lines"></i><div class="icon-glow"></div></div>
+          <div class="tool-card-content">
+            <h3>Notes Generator</h3>
+            <p>Enter any topic and receive AI-structured study notes with explanations, key points, examples, and summaries.</p>
+          </div>
+          <div class="tool-card-footer">
+            <span class="tool-tag">AI-Powered</span>
+            <button class="tool-launch-btn">Launch <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <div class="tool-card" data-page="quiz">
+          <div class="glass-border"></div>
+          <div class="tool-card-shimmer"></div>
+          <div class="corner-accent ca-tl"></div>
+          <div class="corner-accent ca-br"></div>
+          <div class="tool-card-icon"><i class="fa-solid fa-circle-question"></i><div class="icon-glow"></div></div>
+          <div class="tool-card-content">
+            <h3>Quiz Generator</h3>
+            <p>Test your knowledge with AI-generated multiple choice questions. Choose your topic and difficulty level.</p>
+          </div>
+          <div class="tool-card-footer">
+            <span class="tool-tag">Interactive</span>
+            <button class="tool-launch-btn">Launch <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <div class="tool-card" data-page="planner">
+          <div class="glass-border"></div>
+          <div class="tool-card-shimmer"></div>
+          <div class="corner-accent ca-tl"></div>
+          <div class="corner-accent ca-br"></div>
+          <div class="tool-card-icon"><i class="fa-solid fa-calendar-days"></i><div class="icon-glow"></div></div>
+          <div class="tool-card-content">
+            <h3>Study Planner</h3>
+            <p>Input your exam date and subjects. Get an optimized weekly study schedule tailored to your availability.</p>
+          </div>
+          <div class="tool-card-footer">
+            <span class="tool-tag">Smart Schedule</span>
+            <button class="tool-launch-btn">Launch <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <div class="tool-card" data-page="focus">
+          <div class="glass-border"></div>
+          <div class="tool-card-shimmer"></div>
+          <div class="corner-accent ca-tl"></div>
+          <div class="corner-accent ca-br"></div>
+          <div class="tool-card-icon"><i class="fa-solid fa-stopwatch"></i><div class="icon-glow"></div></div>
+          <div class="tool-card-content">
+            <h3>Focus Mode</h3>
+            <p>Stay in the zone with a Pomodoro timer. 25 minutes of deep focus followed by 5 minute breaks.</p>
+          </div>
+          <div class="tool-card-footer">
+            <span class="tool-tag">Pomodoro</span>
+            <button class="tool-launch-btn">Launch <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- AI Tip Banner -->
+      <div class="ai-tip-banner">
+        <div class="ai-tip-icon"><i class="fa-solid fa-robot"></i></div>
+        <div class="ai-tip-text">
+          <strong>AI Tip of the Day:</strong>
+          <span id="ai-tip">The spacing effect suggests studying material across multiple sessions improves long-term retention by up to 200%.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== NOTES GENERATOR PAGE ===== -->
+    <section class="page" id="page-notes">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Notes Generator</h1>
+          <p class="page-subtitle">AI-structured notes for any topic</p>
+        </div>
+        <div class="header-badge"><i class="fa-solid fa-file-lines"></i> AI Notes</div>
+      </div>
+
+      <div class="input-panel">
+        <div class="input-group">
+          <label class="input-label"><i class="fa-solid fa-lightbulb"></i> Enter Topic</label>
+          <input type="text" id="notes-topic" class="cyber-input" placeholder="e.g. Photosynthesis, World War II, Quantum Mechanics..." />
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label class="input-label"><i class="fa-solid fa-layer-group"></i> Detail Level</label>
+            <select id="notes-level" class="cyber-select">
+              <option value="basic">Basic Overview</option>
+              <option value="intermediate" selected>Intermediate</option>
+              <option value="advanced">Advanced Deep Dive</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label"><i class="fa-solid fa-graduation-cap"></i> Study Focus</label>
+            <select id="notes-focus" class="cyber-select">
+              <option value="general">General Study</option>
+              <option value="exam">Exam Prep</option>
+              <option value="research">Research</option>
+            </select>
+          </div>
+        </div>
+        <button class="cyber-btn primary" id="generate-notes-btn">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Notes
+          <span class="btn-glow"></span>
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state hidden" id="notes-loading">
+        <div class="loading-orb"></div>
+        <p>AI is generating your notes…</p>
+      </div>
+
+      <!-- Notes Output -->
+      <div class="notes-output hidden" id="notes-output">
+
+        <!-- Header bar: title + meta + actions -->
+        <div class="notes-header-bar">
+          <div class="notes-title-block">
+            <div class="notes-title-eyebrow"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Generated Notes</div>
+            <h2 id="notes-title-display"></h2>
+            <div class="notes-meta" id="notes-meta"></div>
+          </div>
+          <div class="notes-actions">
+            <button class="icon-btn" id="copy-notes-btn" title="Copy all notes"><i class="fa-solid fa-copy"></i></button>
+            <button class="icon-btn" id="print-notes-btn" title="Print / Save PDF"><i class="fa-solid fa-print"></i></button>
+            <button class="icon-btn" id="clear-notes-btn" title="Clear"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+
+        <!-- Explanation — full width -->
+        <div class="note-section note-section--wide note-section--explanation" id="note-explanation">
+          <div class="note-section-header">
+            <span class="note-section-icon note-icon--cyan"><i class="fa-solid fa-book-open"></i></span>
+            <h3>Explanation</h3>
+            <span class="section-badge">Core Concept</span>
+          </div>
+          <div class="note-section-body" id="note-explanation-body"></div>
+        </div>
+
+        <!-- 2-column row: Key Points + Important Concepts -->
+        <div class="notes-row-2">
+
+          <div class="note-section note-section--keypoints" id="note-keypoints">
+            <div class="note-section-header">
+              <span class="note-section-icon note-icon--violet"><i class="fa-solid fa-list-check"></i></span>
+              <h3>Key Points</h3>
+              <span class="section-badge section-badge--violet">Must Know</span>
+            </div>
+            <div class="note-section-body" id="note-keypoints-body"></div>
+          </div>
+
+          <div class="note-section note-section--concepts" id="note-concepts">
+            <div class="note-section-header">
+              <span class="note-section-icon note-icon--gold"><i class="fa-solid fa-layer-group"></i></span>
+              <h3>Important Concepts &amp; Stages</h3>
+              <span class="section-badge section-badge--gold">Deep Dive</span>
+            </div>
+            <div class="note-section-body" id="note-concepts-body"></div>
+          </div>
+
+        </div>
+
+        <!-- Real-world Applications — full width -->
+        <div class="note-section note-section--wide note-section--applications" id="note-applications">
+          <div class="note-section-header">
+            <span class="note-section-icon note-icon--green"><i class="fa-solid fa-globe"></i></span>
+            <h3>Real-world Applications</h3>
+            <span class="section-badge section-badge--green">Practical Use</span>
+          </div>
+          <div class="note-section-body" id="note-applications-body"></div>
+        </div>
+
+        <!-- Summary — full width, highlighted -->
+        <div class="note-section note-section--wide highlight-section" id="note-summary">
+          <div class="note-section-header">
+            <span class="note-section-icon note-icon--pink"><i class="fa-solid fa-bolt"></i></span>
+            <h3>Short Summary</h3>
+            <span class="section-badge section-badge--pink">Exam Ready</span>
+          </div>
+          <div class="note-section-body" id="note-summary-body"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== QUIZ GENERATOR PAGE ===== -->
+    <section class="page" id="page-quiz">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Quiz Generator</h1>
+          <p class="page-subtitle">Test your knowledge with AI questions</p>
+        </div>
+        <div class="header-badge"><i class="fa-solid fa-circle-question"></i> MCQ Quiz</div>
+      </div>
+
+      <!-- Quiz Setup -->
+      <div class="input-panel" id="quiz-setup">
+        <div class="input-row">
+          <div class="input-group">
+            <label class="input-label"><i class="fa-solid fa-lightbulb"></i> Quiz Topic</label>
+            <input type="text" id="quiz-topic" class="cyber-input" placeholder="e.g. The Solar System, Python Basics..." />
+          </div>
+          <div class="input-group">
+            <label class="input-label"><i class="fa-solid fa-signal"></i> Difficulty</label>
+            <select id="quiz-difficulty" class="cyber-select">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+        </div>
+        <button class="cyber-btn primary" id="generate-quiz-btn">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Quiz
+          <span class="btn-glow"></span>
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state hidden" id="quiz-loading">
+        <div class="loading-orb"></div>
+        <p>AI is crafting your quiz…</p>
+      </div>
+
+      <!-- Quiz Questions -->
+      <div class="quiz-container hidden" id="quiz-container">
+        <div class="quiz-meta">
+          <span id="quiz-topic-display"></span>
+          <div class="quiz-progress">
+            <span id="quiz-progress-text">Question 1 of 5</span>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="quiz-progress-bar"></div>
+            </div>
+          </div>
+        </div>
+        <div id="quiz-questions-list"></div>
+        <button class="cyber-btn primary" id="submit-quiz-btn">
+          <i class="fa-solid fa-paper-plane"></i> Submit Quiz
+          <span class="btn-glow"></span>
+        </button>
+      </div>
+
+      <!-- Quiz Results -->
+      <div class="quiz-results hidden" id="quiz-results">
+        <div class="result-orb">
+          <span id="result-score-num">0</span>
+          <span class="result-out-of">/5</span>
+        </div>
+        <h2 id="result-message"></h2>
+        <p id="result-sub"></p>
+        <div id="result-breakdown"></div>
+        <button class="cyber-btn secondary" id="retake-quiz-btn">
+          <i class="fa-solid fa-rotate-right"></i> Retake Quiz
+        </button>
+      </div>
+    </section>
+
+    <!-- ===== STUDY PLANNER PAGE ===== -->
+    <section class="page" id="page-planner">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Study Planner</h1>
+          <p class="page-subtitle">Smart weekly schedules tailored to you</p>
+        </div>
+        <div class="header-badge"><i class="fa-solid fa-calendar-days"></i> Planner</div>
+      </div>
+
+      <div class="input-panel">
+        <div class="input-row">
+          <div class="input-group">
+            <label class="input-label"><i class="fa-solid fa-calendar-check"></i> Exam Date</label>
+            <input type="date" id="exam-date" class="cyber-input" />
+          </div>
+          <div class="input-group">
+            <label class="input-label"><i class="fa-solid fa-clock"></i> Study Hours / Day</label>
+            <input type="number" id="study-hours" class="cyber-input" min="1" max="12" value="4" placeholder="Hours per day" />
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label"><i class="fa-solid fa-book"></i> Subjects (comma-separated)</label>
+          <input type="text" id="subjects-input" class="cyber-input" placeholder="e.g. Maths, Physics, Chemistry, English..." />
+        </div>
+        <button class="cyber-btn primary" id="generate-plan-btn">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Schedule
+          <span class="btn-glow"></span>
+        </button>
+      </div>
+
+      <!-- Planner Output -->
+      <div class="planner-output hidden" id="planner-output">
+        <div class="planner-summary" id="planner-summary"></div>
+        <div class="schedule-table-wrap">
+          <table class="schedule-table" id="schedule-table">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Morning</th>
+                <th>Afternoon</th>
+                <th>Evening</th>
+                <th>Hours</th>
+              </tr>
+            </thead>
+            <tbody id="schedule-tbody"></tbody>
+          </table>
+        </div>
+        <div class="planner-tips" id="planner-tips"></div>
+      </div>
+    </section>
+
+    <!-- ===== FOCUS MODE PAGE ===== -->
+    <section class="page" id="page-focus">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Focus Mode</h1>
+          <p class="page-subtitle">Deep work with Pomodoro technique</p>
+        </div>
+        <div class="header-badge"><i class="fa-solid fa-stopwatch"></i> Pomodoro</div>
+      </div>
+
+      <div class="focus-layout">
+        <!-- Timer Widget -->
+        <div class="timer-widget">
+          <div class="timer-mode-tabs">
+            <button class="mode-tab active" data-mode="focus">Focus</button>
+            <button class="mode-tab" data-mode="break">Break</button>
+            <button class="mode-tab" data-mode="long">Long Break</button>
+          </div>
+
+          <div class="timer-ring-wrap">
+            <svg class="timer-ring" viewBox="0 0 200 200">
+              <circle class="ring-bg" cx="100" cy="100" r="88" />
+              <circle class="ring-fill" id="timer-ring-fill" cx="100" cy="100" r="88" />
+            </svg>
+            <div class="timer-display">
+              <span id="timer-time">25:00</span>
+              <span id="timer-mode-label">Focus Session</span>
+            </div>
+          </div>
+
+          <div class="timer-controls">
+            <button class="timer-btn" id="timer-reset"><i class="fa-solid fa-rotate-left"></i></button>
+            <button class="timer-btn primary" id="timer-start"><i class="fa-solid fa-play" id="timer-play-icon"></i></button>
+            <button class="timer-btn" id="timer-skip"><i class="fa-solid fa-forward-step"></i></button>
+          </div>
+
+          <div class="session-tracker">
+            <span>Sessions Today:</span>
+            <div class="session-dots" id="session-dots">
+              <span class="session-dot" data-index="0"></span>
+              <span class="session-dot" data-index="1"></span>
+              <span class="session-dot" data-index="2"></span>
+              <span class="session-dot" data-index="3"></span>
+            </div>
+            <span id="session-count">0 / 4</span>
+          </div>
+        </div>
+
+        <!-- Focus Settings & Tips -->
+        <div class="focus-side">
+          <div class="focus-card">
+            <h3><i class="fa-solid fa-sliders"></i> Timer Settings</h3>
+            <div class="setting-row">
+              <label>Focus Duration</label>
+              <div class="setting-control">
+                <button class="setting-btn" id="focus-minus">-</button>
+                <span id="focus-duration-val">25</span> min
+                <button class="setting-btn" id="focus-plus">+</button>
+              </div>
+            </div>
+            <div class="setting-row">
+              <label>Break Duration</label>
+              <div class="setting-control">
+                <button class="setting-btn" id="break-minus">-</button>
+                <span id="break-duration-val">5</span> min
+                <button class="setting-btn" id="break-plus">+</button>
+              </div>
+            </div>
+            <div class="setting-row">
+              <label>Long Break</label>
+              <div class="setting-control">
+                <button class="setting-btn" id="long-minus">-</button>
+                <span id="long-duration-val">15</span> min
+                <button class="setting-btn" id="long-plus">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="focus-card">
+            <h3><i class="fa-solid fa-tasks"></i> Current Task</h3>
+            <input type="text" id="task-input" class="cyber-input" placeholder="What are you working on?" />
+            <div class="focus-task-display" id="focus-task-display" style="display:none"></div>
+          </div>
+
+          <div class="focus-card">
+            <h3><i class="fa-solid fa-brain"></i> Focus Tips</h3>
+            <ul class="focus-tips-list" id="focus-tips-list">
+              <li>Close all distracting browser tabs before starting.</li>
+              <li>Put your phone on Do Not Disturb mode.</li>
+              <li>Keep water nearby — stay hydrated.</li>
+              <li>During breaks, stand up and stretch.</li>
+              <li>After 4 Pomodoros, take a 15–30 min long break.</li>
+            </ul>
+          </div>
+
+          <div class="focus-card stats-card">
+            <div class="focus-stat">
+              <span class="focus-stat-val" id="today-sessions">0</span>
+              <span class="focus-stat-label">Today</span>
+            </div>
+            <div class="focus-stat">
+              <span class="focus-stat-val" id="today-minutes">0</span>
+              <span class="focus-stat-label">Min Focused</span>
+            </div>
+            <div class="focus-stat">
+              <span class="focus-stat-val" id="total-sessions">0</span>
+              <span class="focus-stat-label">Total Sessions</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
