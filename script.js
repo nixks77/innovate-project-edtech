@@ -1,7 +1,3 @@
-/* ============================================================
-   AI STUDY COMPANION — script.js
-   Modular Vanilla JS
-   ============================================================ */
 
 'use strict';
 
@@ -12,9 +8,9 @@ const API_BASE_URL = window.location.hostname === 'localhost' || window.location
   ? 'http://localhost:3000'
   : 'https://study-backend-beta.vercel.app/api';
 
-/* ========================
+/* 
    MODULE: App State
-   ======================== */
+    */
 const AppState = {
   stats: {
     streak: 1,
